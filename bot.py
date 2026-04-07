@@ -1,10 +1,10 @@
+import os
 import requests
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
-# ===== KONFIGURACJA =====
-TOKEN = "7900058739:AAEWK3u8z_5k02P4eyqwqn9DsWichSDWsq4"
-API_KEY = "aae600a2491547a9e17a4f32d5125403"
+TOKEN = os.environ["TOKEN"]
+API_KEY = os.environ["API_KEY"]
 
 INTERVAL = 180
 PROG_MOCNY = 90
@@ -16,7 +16,6 @@ DOZWOLONE_LIGI = [
     "Premier League",
     "Serie A"
 ]
-# ========================
 
 CHAT_ID = None
 WYSLANE_ALERTY = set()
@@ -64,7 +63,7 @@ def pobierz_mecze():
     try:
         response = requests.get(url, headers=headers, params=params, timeout=15)
         data = response.json()
-    except:
+    except Exception:
         return []
 
     mecze = []
@@ -86,7 +85,7 @@ def pobierz_mecze():
                 "kurs": 1.80
             })
 
-        except:
+        except Exception:
             continue
 
     return mecze
@@ -140,7 +139,7 @@ async def skaner(context: ContextTypes.DEFAULT_TYPE):
             chat_id=CHAT_ID,
             text=(
                 f"{naglowek}\n\n"
-                f"🏆 Liga: {m['mecz']}\n"
+                f"🏆 Mecz: {m['mecz']}\n"
                 f"Minuta: {m['minuta']}\n"
                 f"Wynik: {m['wynik']}\n"
                 f"Punkty: {punkty}/{max_punkty} ({int(procent)}%)\n\n"
